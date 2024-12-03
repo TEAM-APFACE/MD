@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">APFACE+</string>
+    <string name="title_home">Home</string>
+    <string name="title_saved">Saved</string>
+    <string name="title_settings">Settings</string>
+    <string name="logo_name">APFACE+</string>
+</resources>
