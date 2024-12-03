@@ -4,17 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.teamapface.databinding.FragmentSettingsBinding
+import com.teamapface.utils.ThemeUtils
 
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,16 +19,23 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        val settingsViewModel =
+            ViewModelProvider(this).get(SettingsViewModel::class.java)
 
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+
+        // Initialize the switch state
+        val isDarkMode = ThemeUtils.isDarkMode(requireContext())
+        binding.themeSwitch.isChecked = isDarkMode
+
+        // Handle switch toggle
+        binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            ThemeUtils.saveThemePreference(requireContext(), isChecked)
+            ThemeUtils.applyTheme(requireContext())
         }
+
         return root
     }
 
