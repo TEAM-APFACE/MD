@@ -9,26 +9,34 @@
     app:cardElevation="10dp">
 
     <LinearLayout
-        android:background="?attr/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
         android:orientation="vertical"
         android:padding="8dp">
 
         <ImageView
-            android:elevation="20dp"
-            android:id="@+id/img_result"
+            android:id="@+id/imageViewSaved"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginBottom="8dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/image_placeholder"/>
+            android:background="@drawable/image_placeholder"
+            android:elevation="20dp"
+            android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/tv_condition"
+            android:id="@+id/textViewCondition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Condition"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textViewModelType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Type"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp" />
     </LinearLayout>

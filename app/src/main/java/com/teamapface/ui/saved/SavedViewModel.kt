@@ -1,21 +1,26 @@
 package com.teamapface.ui.saved
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.teamapface.utils.database.AppDatabase
+import com.teamapface.utils.model.SavedResult
+import kotlinx.coroutines.launch
 
-class SavedViewModel : ViewModel() {
+class SavedViewModel(application: Application) : AndroidViewModel(application) {
+    private val savedResultDao = AppDatabase.getInstance(application).savedResultDao()
+    val savedResults: LiveData<List<SavedResult>> = savedResultDao.getAllSavedResults()
 
-    private val _savedResults = MutableLiveData<List<SavedResult>>()
-    val savedResults: LiveData<List<SavedResult>> = _savedResults
+    fun addResult(result: SavedResult) {
+        viewModelScope.launch {
+            savedResultDao.insert(result)
+        }
+    }
 
-    // Sample data for testing
-    init {
-        // Simulating data population for testing purposes
-        val dummyData = listOf(
-            SavedResult("Condition 1", "https://example.com/image1.jpg"),
-            SavedResult("Condition 2", "https://example.com/image2.jpg")
-        )
-        _savedResults.value = dummyData
+    fun deleteResult(result: SavedResult) {
+        viewModelScope.launch {
+            savedResultDao.delete(result)
+        }
     }
 }

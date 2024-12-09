@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("kapt")
+    id("kotlin-kapt")
 }
 
 android {
@@ -16,6 +16,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -40,7 +41,12 @@ android {
 }
 
 dependencies {
-    implementation("com.github.bumptech.glide:glide:4.13.2")
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.glide)
     kapt("com.github.bumptech.glide:compiler:4.13.2")
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.lifecycle)
