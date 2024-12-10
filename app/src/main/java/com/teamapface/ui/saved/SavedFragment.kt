@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.teamapface.databinding.FragmentSavedBinding
 import com.teamapface.ui.home.ResultActivity
-import com.teamapface.utils.model.SavedResult // Ensure you're importing from the correct package
+import com.teamapface.utils.model.SavedResult
 
 class SavedFragment : Fragment() {
 
@@ -41,8 +41,24 @@ class SavedFragment : Fragment() {
 
     private fun observeSavedResults() {
         savedViewModel.savedResults.observe(viewLifecycleOwner) { results ->
-            savedResultsAdapter.updateResults(results)
+            // Hide the loading indicator
+            binding.progressBarLoading.visibility = View.GONE
+
+            // Check if there are saved results
+            if (results.isNullOrEmpty()) {
+                binding.recyclerViewSavedResults.visibility = View.GONE
+                binding.textViewNoSavedItems.visibility = View.VISIBLE
+            } else {
+                binding.recyclerViewSavedResults.visibility = View.VISIBLE
+                binding.textViewNoSavedItems.visibility = View.GONE
+                savedResultsAdapter.updateResults(results)
+            }
         }
+
+        // Simulate loading state initially
+        binding.progressBarLoading.visibility = View.VISIBLE
+        binding.recyclerViewSavedResults.visibility = View.GONE
+        binding.textViewNoSavedItems.visibility = View.GONE
     }
 
     private fun openResultDetail(result: SavedResult) {
@@ -51,7 +67,7 @@ class SavedFragment : Fragment() {
             putExtra("image_uri", result.imageUri)
             putExtra("predicted_condition", result.condition)
             putExtra("model_type", result.type)
-            putExtra("is_deletable", true) // You can add logic here to handle delete functionality in the ResultActivity
+            putExtra("is_deletable", true)
         }
         startActivity(intent)
     }
