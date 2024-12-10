@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         // Apply theme on app launch
         ThemeUtils.applyTheme(this)
 
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

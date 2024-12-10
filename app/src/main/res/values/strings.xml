@@ -4,4 +4,36 @@
     <string name="title_saved">Saved</string>
     <string name="title_settings">Settings</string>
     <string name="logo_name">APFACE+</string>
+
+    <string name="screen_description">Welcome to FaceAnalyzer, powered by AI. Analyze your skin and discover valuable insights into your skin type and potential concerns. We provide detailed descriptions for each condition and type identified.</string>
+
+    <!-- Skin Condition Classification Model -->
+    <string name="dry_skin_description">
+        Dry skin lacks sufficient natural oils, leading to a dull and flaky appearance. This skin type often feels tight and rough, especially after washing with harsh cleansers or exposure to cold weather. Dry skin can develop fine lines prematurely and may also become red or irritated due to its compromised barrier. Proper hydration and moisturizing are essential for maintaining a healthy balance.
+    </string>
+    <string name="normal_skin_description">
+        Normal skin is the epitome of balance, neither too oily nor too dry. It features an even tone, smooth texture, and minimal blemishes. Pores are small and hardly noticeable, and the skin rarely feels greasy or tight. Although this skin type is less problematic, it still benefits from regular care to protect against environmental damage and aging.
+    </string>
+    <string name="oily_skin_description">
+        Oily skin produces an excess of sebum, resulting in a shiny complexion and larger pores. While prone to blackheads, acne, and breakouts, oily skin also has its advantages, such as slower aging due to better hydration. Managing oily skin requires gentle cleansing to prevent clogged pores and lightweight, non-comedogenic moisturizers to balance oil production.
+    </string>
+    <string name="acne_description">
+        Acne is a common skin condition characterized by pimples, blackheads, whiteheads, and even cysts. It occurs when hair follicles become clogged with oil, dead skin cells, and bacteria. Hormonal fluctuations, stress, diet, and certain skincare products can trigger acne. Effective treatment often involves a combination of cleansing, topical medications, and maintaining a healthy lifestyle.
+    </string>
+    <string name="freckles_description">
+        Freckles are small, flat, tan, or light brown spots that often appear on sun-exposed areas of the skin. These spots are a result of an overproduction of melanin, typically in fair-skinned individuals. While freckles are harmless and genetic, prolonged sun exposure can make them darker and more pronounced. Wearing sunscreen is essential for preventing additional spots and protecting the skin from UV damage.
+    </string>
+    <string name="blackhead_description">
+        Blackheads are small, dark blemishes that form when hair follicles become clogged with oil and dead skin cells. Unlike pimples, blackheads remain open at the surface, and their dark color is due to the oxidation of trapped oil. They commonly appear on the nose, chin, and forehead and are more frequent in oily skin types. Regular exfoliation and proper cleansing can help minimize their occurrence.
+    </string>
+    <string name="redness_description">
+        Redness in the skin can occur due to sensitivity, irritation, or underlying conditions such as rosacea or eczema. It can make the skin appear inflamed, blotchy, or uneven. Environmental factors like wind, sun, and temperature changes can exacerbate redness. For those with sensitive skin, using gentle, fragrance-free products and protecting against environmental triggers is crucial for maintaining an even complexion.
+    </string>
+    <string name="comedo_description">
+        A comedo is a clogged hair follicle in the skin that can manifest as either a whitehead or a blackhead. Comedones are caused by the buildup of sebum, dead skin cells, and bacteria. They are a primary feature of acne and often appear on the face, chest, or back. Proper skincare, including gentle exfoliation and non-comedogenic products, can help prevent and manage comedones effectively.
+    </string>
+    <string name="unknown_model_description">
+        No description available. This condition or type is not yet documented in our database. Please check back later for updates or consult a dermatologist for more information.
+    </string>
+
 </resources>

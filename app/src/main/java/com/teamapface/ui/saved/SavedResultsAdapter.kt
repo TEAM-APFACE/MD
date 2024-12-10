@@ -1,12 +1,13 @@
 package com.teamapface.ui.saved
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.teamapface.R
 import com.teamapface.utils.model.SavedResult
 
@@ -18,10 +19,18 @@ class SavedResultsAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val imageView = view.findViewById<ImageView>(R.id.imageViewSaved)
         private val textViewCondition = view.findViewById<TextView>(R.id.textViewCondition)
+        private val textViewType = view.findViewById<TextView>(R.id.textViewType)
 
         fun bind(result: SavedResult) {
-            imageView.setImageURI(Uri.parse(result.imageUri))
+            // Use Glide to load the image
+            Glide.with(itemView.context)
+                .load(result.imageUri) // Directly use the URI
+                .placeholder(R.drawable.image_placeholder) // Optional: Add a placeholder image
+                .error(R.drawable.image_broken) // Optional: Add an error image
+                .into(imageView)
+
             textViewCondition.text = result.condition
+            textViewType.text = result.type // Bind modelType to textViewType
 
             itemView.setOnClickListener {
                 onClick(result)
@@ -42,8 +51,27 @@ class SavedResultsAdapter(
     override fun getItemCount(): Int = results.size
 
     fun updateResults(newResults: List<SavedResult>) {
+        val diffResult = DiffUtil.calculateDiff(SavedResultsDiffCallback(results, newResults))
         results = newResults
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    private class SavedResultsDiffCallback(
+        private val oldList: List<SavedResult>,
+        private val newList: List<SavedResult>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldList.size
+
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
+        }
     }
 }
 

@@ -20,11 +20,13 @@ import com.teamapface.R
 import com.teamapface.api.RetrofitClient
 import com.teamapface.api.AnalysisRequest
 import com.teamapface.databinding.FragmentHomeBinding
+import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 class HomeFragment : Fragment() {
 
@@ -60,7 +62,6 @@ class HomeFragment : Fragment() {
 
     private fun setSelectedModel(model: String) {
         selectedModel = model
-
         val colorPrimary = getThemeColor(com.google.android.material.R.attr.colorPrimary)
         val colorSecondary = getThemeColor(com.google.android.material.R.attr.colorPrimaryVariant)
         val colorOnPrimary = getThemeColor(com.google.android.material.R.attr.colorOnPrimary)
@@ -78,18 +79,7 @@ class HomeFragment : Fragment() {
             binding.btnCondition.backgroundTintList =
                 ContextCompat.getColorStateList(requireContext(), colorPrimary)
         }
-
         Toast.makeText(requireContext(), "$selectedModel Model Selected", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun getThemeColor(attr: Int): Int {
-        val typedValue = TypedValue()
-        val theme = requireContext().theme
-        if (theme.resolveAttribute(attr, typedValue, true)) {
-            return typedValue.resourceId
-        } else {
-            throw IllegalArgumentException("Attribute not found in theme")
-        }
     }
 
     private fun openCamera() {
@@ -103,8 +93,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun analyzeImage() {
-        binding.progressBar.visibility = View.VISIBLE // Show loading circle
-
+        binding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch {
             try {
                 val inputStream = requireContext().contentResolver.openInputStream(imageUri!!)
@@ -112,7 +101,6 @@ class HomeFragment : Fragment() {
                 val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), byteArray)
                 val body = MultipartBody.Part.createFormData("file", "image.jpg", requestFile)
 
-                // Call appropriate API based on selected model
                 val apiService = RetrofitClient.instance
                 val response = if (selectedModel == "Type") {
                     apiService.analyzeSkinType(body)
@@ -120,7 +108,6 @@ class HomeFragment : Fragment() {
                     apiService.analyzeCondition(body)
                 }
 
-                // Navigate to ResultActivity with the result
                 val intent = Intent(requireContext(), ResultActivity::class.java).apply {
                     putExtra("predicted_condition", response.predicted_condition)
                     putExtra("image_uri", imageUri.toString())
@@ -130,18 +117,9 @@ class HomeFragment : Fragment() {
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
-                binding.progressBar.visibility = View.GONE // Hide loading circle
+                binding.progressBar.visibility = View.GONE
             }
         }
-    }
-
-    private fun encodeImageToBase64(uri: Uri): String {
-        val inputStream = requireContext().contentResolver.openInputStream(uri)
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-        val byteArray = byteArrayOutputStream.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -149,20 +127,43 @@ class HomeFragment : Fragment() {
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 CAMERA_REQUEST_CODE -> {
+                    // Get the bitmap from the camera and update the imageUri
                     val bitmap = data?.extras?.get("data") as Bitmap
                     imageUri = saveBitmapToUri(bitmap)
-                    binding.imagePlaceholder.setImageBitmap(bitmap)
+                    // Update the placeholder with the new image
+                    binding.imagePlaceholder.setImageURI(imageUri)
+                    startCrop(imageUri!!)
                 }
                 GALLERY_REQUEST_CODE -> {
+                    // Get the URI from the gallery and update the imageUri
                     imageUri = data?.data
-                    imageUri?.let {
-                        val inputStream = requireContext().contentResolver.openInputStream(it)
-                        val bitmap = BitmapFactory.decodeStream(inputStream)
-                        binding.imagePlaceholder.setImageBitmap(bitmap)
+                    // Update the placeholder with the new image
+                    binding.imagePlaceholder.setImageURI(imageUri)
+                    imageUri?.let { startCrop(it) }
+                }
+                UCrop.REQUEST_CROP -> {
+                    // Get the cropped image URI
+                    val resultUri = UCrop.getOutput(data!!)
+                    if (resultUri != null) {
+                        imageUri = resultUri
+                        // Update the placeholder with the new cropped image
+                        binding.imagePlaceholder.setImageURI(imageUri)
                     }
+                }
+                UCrop.RESULT_ERROR -> {
+                    val cropError = UCrop.getError(data!!)
+                    Toast.makeText(requireContext(), "Crop error: ${cropError?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+
+    private fun startCrop(uri: Uri) {
+        val destinationUri = Uri.fromFile(File(requireContext().cacheDir, "cropped.jpg"))
+        UCrop.of(uri, destinationUri)
+            .withAspectRatio(1f, 1f)
+            .withMaxResultSize(1000, 1000)
+            .start(requireContext(), this)
     }
 
     private fun saveBitmapToUri(bitmap: Bitmap): Uri {
@@ -173,6 +174,16 @@ class HomeFragment : Fragment() {
             null
         )
         return Uri.parse(path)
+    }
+
+    private fun getThemeColor(attr: Int): Int {
+        val typedValue = TypedValue()
+        val theme = requireContext().theme
+        if (theme.resolveAttribute(attr, typedValue, true)) {
+            return typedValue.resourceId
+        } else {
+            throw IllegalArgumentException("Attribute not found in theme")
+        }
     }
 
     override fun onDestroyView() {

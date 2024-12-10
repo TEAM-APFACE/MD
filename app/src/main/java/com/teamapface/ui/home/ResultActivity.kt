@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.teamapface.R
 import com.teamapface.databinding.ActivityResultBinding
 import com.teamapface.ui.saved.SavedViewModel
 import com.teamapface.utils.model.SavedResult
@@ -37,7 +38,21 @@ class ResultActivity : AppCompatActivity() {
         // Set UI data
         binding.imageResult.setImageURI(imageUri)
         binding.tvResultTitle.text = predictedCondition
-        binding.tvResultDescription.text = modelType
+        binding.tvConditionorType.text = modelType
+
+        // Retrieve and display the appropriate description for the model type
+        val description = when (predictedCondition) {
+            "Acne" -> getString(R.string.acne_description)
+            "Blackhead" -> getString(R.string.blackhead_description)
+            "Freckles" -> getString(R.string.freckles_description)
+            "Redness" -> getString(R.string.redness_description)
+            "Normal" -> getString(R.string.normal_skin_description)
+            "Dry" -> getString(R.string.dry_skin_description)
+            "Oily" -> getString(R.string.oily_skin_description)
+            "Comedo" -> getString(R.string.comedo_description)
+            else -> getString(R.string.unknown_model_description) // Add a fallback string in strings.xml for "Unknown"
+        }
+        binding.tvResultDescription.text = description
 
         if (isDeletable) {
             binding.btnSaveResult.visibility = View.GONE
