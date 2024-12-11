@@ -19,3 +19,6 @@ Face Scan AI is a mobile application that leverages artificial intelligence to a
 - **Intuitive User Interface**: The app is designed with a focus on user experience, making it easy to navigate and understand your skin's health.
 - **Skin Problem Descriptions**: Each detected skin condition is accompanied by a clear, easy-to-understand description to help users identify and address their skin issues.
 
+## DOWNLOAD NOW!
+
+You can download the app directly from [here](https://drive.google.com/file/d/15b3RUm4ePhmRSeM-N4Z345gn0R8VW1bj/view?usp=sharing).
